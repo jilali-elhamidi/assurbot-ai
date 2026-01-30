@@ -14,18 +14,13 @@ import {
   Home,
   X,
   Image,
+  Info,
+  CheckCircle2 // <--- AJOUTÉ ICI
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -126,7 +121,7 @@ const ClaimsPage = () => {
 
   const slideVariants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 100 : -100,
+      x: direction > 0 ? 20 : -20,
       opacity: 0,
     }),
     center: {
@@ -134,7 +129,7 @@ const ClaimsPage = () => {
       opacity: 1,
     },
     exit: (direction: number) => ({
-      x: direction < 0 ? 100 : -100,
+      x: direction < 0 ? 20 : -20,
       opacity: 0,
     }),
   };
@@ -142,388 +137,331 @@ const ClaimsPage = () => {
   const selectedClaimType = claimTypes.find((t) => t.id === formData.claimType);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <h1 className="text-2xl md:text-3xl font-bold">
-          <span className="gradient-text">Déclarer un Sinistre</span>
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Suivez les étapes pour déclarer votre sinistre rapidement
-        </p>
-      </motion.div>
+    <div className="min-h-screen bg-slate-50/50 p-6 md:p-8 font-['Outfit'] selection:bg-blue-100 selection:text-blue-900">
+      <div className="max-w-4xl mx-auto space-y-8">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center md:text-left"
+        >
+          <h1 className="text-3xl font-bold text-slate-900">Déclarer un Sinistre</h1>
+          <p className="text-slate-500 mt-1">
+            Suivez les étapes pour déclarer votre sinistre rapidement et en toute sécurité.
+          </p>
+        </motion.div>
 
-      {/* Progress Steps */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-6 rounded-xl"
-      >
-        <div className="flex items-center justify-between">
-          {steps.map((step, index) => (
-            <div key={step.id} className="flex items-center">
-              <div className="flex flex-col items-center">
-                <div
-                  className={cn(
-                    "wizard-step",
-                    currentStep === step.id && "wizard-step-active",
-                    currentStep > step.id && "wizard-step-completed"
-                  )}
-                >
-                  {currentStep > step.id ? (
-                    <Check className="h-5 w-5" />
-                  ) : (
-                    <step.icon className="h-5 w-5" />
-                  )}
+        {/* Progress Stepper (Style Moderne Clair) */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center justify-between relative">
+            {/* Ligne de fond */}
+            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -z-10" />
+            
+            {steps.map((step, index) => {
+              const isCompleted = currentStep > step.id;
+              const isActive = currentStep === step.id;
+              
+              return (
+                <div key={step.id} className="flex flex-col items-center relative z-10 bg-white px-2">
+                  <div
+                    className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 border-2",
+                      isCompleted ? "bg-emerald-500 border-emerald-500 text-white" : 
+                      isActive ? "bg-white border-blue-600 text-blue-600 shadow-[0_0_0_4px_rgba(37,99,235,0.1)]" : 
+                      "bg-white border-slate-200 text-slate-300"
+                    )}
+                  >
+                    {isCompleted ? <Check className="h-5 w-5" /> : <step.icon className="h-5 w-5" />}
+                  </div>
+                  <span
+                    className={cn(
+                      "text-xs mt-2 font-medium transition-colors hidden sm:block absolute -bottom-6 w-32 text-center",
+                      isActive ? "text-blue-600" : isCompleted ? "text-emerald-600" : "text-slate-400"
+                    )}
+                  >
+                    {step.title}
+                  </span>
                 </div>
-                <span
-                  className={cn(
-                    "text-xs mt-2 hidden sm:block",
-                    currentStep >= step.id
-                      ? "text-foreground"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {step.title}
-                </span>
-              </div>
-              {index < steps.length - 1 && (
-                <div
-                  className={cn(
-                    "h-0.5 w-8 sm:w-16 md:w-24 mx-2",
-                    currentStep > step.id ? "bg-accent" : "bg-muted"
-                  )}
-                />
-              )}
-            </div>
-          ))}
+              );
+            })}
+          </div>
+          <div className="h-6 sm:hidden" /> {/* Spacer mobile */}
         </div>
-      </motion.div>
 
-      {/* Form Steps */}
-      <div className="glass-card p-6 md:p-8 rounded-xl min-h-[400px] flex flex-col">
-        <AnimatePresence mode="wait" custom={currentStep}>
-          <motion.div
-            key={currentStep}
-            custom={currentStep}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="flex-1"
-          >
-            {/* Step 1: Claim Type */}
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">
-                  Quel type de sinistre souhaitez-vous déclarer ?
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {claimTypes.map((type) => (
-                    <button
-                      key={type.id}
-                      onClick={() =>
-                        setFormData({ ...formData, claimType: type.id })
-                      }
-                      className={cn(
-                        "p-4 rounded-xl border-2 transition-all text-left",
-                        "hover:border-primary/50 hover:bg-white/5",
-                        formData.claimType === type.id
-                          ? "border-primary bg-primary/10"
-                          : "border-white/10 bg-white/5"
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={cn(
-                            "w-10 h-10 rounded-lg flex items-center justify-center",
-                            formData.claimType === type.id
-                              ? "bg-primary/20"
-                              : "bg-white/10"
-                          )}
-                        >
-                          <type.icon
-                            className={cn(
-                              "h-5 w-5",
-                              formData.claimType === type.id
-                                ? "text-primary"
-                                : "text-muted-foreground"
-                            )}
-                          />
+        {/* Form Container */}
+        <div className="bg-white p-6 md:p-10 rounded-2xl border border-slate-200 shadow-sm min-h-[450px] flex flex-col">
+          <AnimatePresence mode="wait" custom={currentStep}>
+            <motion.div
+              key={currentStep}
+              custom={currentStep}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3 }}
+              className="flex-1"
+            >
+              
+              {/* --- STEP 1: TYPE --- */}
+              {currentStep === 1 && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-slate-900">Quel type de sinistre souhaitez-vous déclarer ?</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {claimTypes.map((type) => (
+                      <button
+                        key={type.id}
+                        onClick={() => setFormData({ ...formData, claimType: type.id })}
+                        className={cn(
+                          "p-4 rounded-xl border transition-all text-left flex items-center gap-4 group",
+                          formData.claimType === type.id
+                            ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500"
+                            : "border-slate-200 hover:border-blue-200 hover:bg-slate-50"
+                        )}
+                      >
+                        <div className={cn(
+                          "w-12 h-12 rounded-lg flex items-center justify-center transition-colors",
+                          formData.claimType === type.id ? "bg-blue-100 text-blue-600" : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-blue-500"
+                        )}>
+                          <type.icon className="h-6 w-6" />
                         </div>
-                        <span className="font-medium">{type.label}</span>
-                      </div>
-                    </button>
-                  ))}
+                        <span className={cn(
+                          "font-medium",
+                          formData.claimType === type.id ? "text-blue-900" : "text-slate-700"
+                        )}>
+                          {type.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Step 2: Date and Location */}
-            {currentStep === 2 && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">
-                  Quand et où s'est produit le sinistre ?
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="date">Date du sinistre</Label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              {/* --- STEP 2: DATE & LIEU --- */}
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-slate-900">Quand et où s'est produit le sinistre ?</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="date" className="text-slate-700">Date du sinistre</Label>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <Input
+                          id="date"
+                          type="date"
+                          className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20"
+                          value={formData.date}
+                          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="time" className="text-slate-700">Heure approximative</Label>
                       <Input
-                        id="date"
-                        type="date"
-                        className="pl-10 input-glass"
-                        value={formData.date}
-                        onChange={(e) =>
-                          setFormData({ ...formData, date: e.target.value })
-                        }
+                        id="time"
+                        type="time"
+                        className="bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20"
+                        value={formData.time}
+                        onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="time">Heure approximative</Label>
-                    <Input
-                      id="time"
-                      type="time"
-                      className="input-glass"
-                      value={formData.time}
-                      onChange={(e) =>
-                        setFormData({ ...formData, time: e.target.value })
-                      }
-                    />
+                    <Label htmlFor="location" className="text-slate-700">Lieu du sinistre</Label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        id="location"
+                        placeholder="Adresse ou description du lieu"
+                        className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20"
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location">Lieu du sinistre</Label>
+              )}
+
+              {/* --- STEP 3: DESCRIPTION --- */}
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-slate-900">Décrivez les circonstances</h2>
+                  <div className="space-y-2">
+                    <Label htmlFor="description" className="text-slate-700">Description détaillée</Label>
+                    <Textarea
+                      id="description"
+                      placeholder="Décrivez ce qui s'est passé avec le plus de détails possible..."
+                      className="min-h-[200px] bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 resize-none"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    />
+                    <div className="flex justify-between items-center text-xs">
+                        <span className={formData.description.length >= 20 ? "text-emerald-600 flex items-center gap-1" : "text-slate-400"}>
+                            {formData.description.length >= 20 && <Check className="w-3 h-3" />} 
+                            Minimum 20 caractères
+                        </span>
+                        <span className="text-slate-400">{formData.description.length} car.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* --- STEP 4: PHOTOS --- */}
+              {currentStep === 4 && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-slate-900">Ajoutez des photos (optionnel)</h2>
+                  <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-start gap-3">
+                     <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                     <p className="text-sm text-blue-800">Les photos aident nos experts à analyser votre dossier plus rapidement. Ajoutez des vues d'ensemble et des gros plans des dégâts.</p>
+                  </div>
+
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      id="location"
-                      placeholder="Adresse ou description du lieu"
-                      className="pl-10 input-glass"
-                      value={formData.location}
-                      onChange={(e) =>
-                        setFormData({ ...formData, location: e.target.value })
-                      }
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                      onChange={handlePhotoUpload}
+                      disabled={formData.photos.length >= 5}
                     />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Description */}
-            {currentStep === 3 && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">
-                  Décrivez les circonstances du sinistre
-                </h2>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description détaillée</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Décrivez ce qui s'est passé avec le plus de détails possible..."
-                    className="min-h-[200px] input-glass"
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    {formData.description.length}/20 caractères minimum
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Photos */}
-            {currentStep === 4 && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">
-                  Ajoutez des photos (optionnel)
-                </h2>
-                <p className="text-muted-foreground">
-                  Les photos aident à accélérer le traitement de votre dossier.
-                </p>
-
-                {/* Upload Zone */}
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                    onChange={handlePhotoUpload}
-                    disabled={formData.photos.length >= 5}
-                  />
-                  <div
-                    className={cn(
-                      "border-2 border-dashed rounded-xl p-8 text-center transition-colors",
-                      formData.photos.length >= 5
-                        ? "border-muted-foreground/20 bg-muted/5"
-                        : "border-primary/30 bg-primary/5 hover:border-primary/50"
-                    )}
-                  >
-                    <Upload className="h-12 w-12 mx-auto text-primary/50 mb-4" />
-                    <p className="font-medium">
-                      {formData.photos.length >= 5
-                        ? "Maximum atteint (5 photos)"
-                        : "Cliquez ou déposez vos photos ici"}
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      PNG, JPG jusqu'à 10MB
-                    </p>
-                  </div>
-                </div>
-
-                {/* Photo Preview */}
-                {formData.photos.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {formData.photos.map((photo, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-video rounded-lg overflow-hidden bg-white/5 group"
-                      >
-                        <img
-                          src={URL.createObjectURL(photo)}
-                          alt={`Photo ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          onClick={() => removePhoto(index)}
-                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-destructive/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="h-4 w-4 text-white" />
-                        </button>
+                    <div className={cn(
+                        "border-2 border-dashed rounded-xl p-10 text-center transition-colors flex flex-col items-center justify-center min-h-[200px]",
+                        formData.photos.length >= 5 ? "border-slate-200 bg-slate-50" : "border-blue-200 bg-blue-50/50 hover:border-blue-400 hover:bg-blue-50"
+                    )}>
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+                         <Upload className="h-8 w-8 text-blue-500" />
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Step 5: Confirmation */}
-            {currentStep === 5 && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">
-                  Récapitulatif de votre déclaration
-                </h2>
-
-                <div className="space-y-4">
-                  {/* Claim Type */}
-                  <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      {selectedClaimType && (
-                        <>
-                          <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                            <selectedClaimType.icon className="h-5 w-5 text-primary" />
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Type de sinistre</p>
-                            <p className="font-medium">{selectedClaimType.label}</p>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Date and Location */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                      <p className="text-sm text-muted-foreground">Date et heure</p>
-                      <p className="font-medium">
-                        {formData.date} {formData.time && `à ${formData.time}`}
+                      <p className="font-medium text-slate-900">
+                        {formData.photos.length >= 5 ? "Maximum atteint (5 photos)" : "Cliquez ou déposez vos photos ici"}
                       </p>
-                    </div>
-                    <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                      <p className="text-sm text-muted-foreground">Lieu</p>
-                      <p className="font-medium">{formData.location}</p>
+                      <p className="text-sm text-slate-500 mt-1">PNG, JPG jusqu'à 10MB</p>
                     </div>
                   </div>
 
-                  {/* Description */}
-                  <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                    <p className="text-sm text-muted-foreground mb-2">Description</p>
-                    <p className="text-sm">{formData.description}</p>
-                  </div>
-
-                  {/* Photos */}
                   {formData.photos.length > 0 && (
-                    <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Photos jointes ({formData.photos.length})
-                      </p>
-                      <div className="flex gap-2">
-                        {formData.photos.map((_, index) => (
-                          <div
-                            key={index}
-                            className="w-12 h-12 rounded bg-primary/20 flex items-center justify-center"
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {formData.photos.map((photo, index) => (
+                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 group shadow-sm">
+                          <img
+                            src={URL.createObjectURL(photo)}
+                            alt={`Photo ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            onClick={() => removePhoto(index)}
+                            className="absolute top-1 right-1 w-6 h-6 rounded-full bg-white/90 text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 shadow-sm"
                           >
-                            <Image className="h-5 w-5 text-primary" />
-                          </div>
-                        ))}
-                      </div>
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
-
-                <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
-                  <p className="text-sm text-accent">
-                    En soumettant cette déclaration, vous certifiez que les informations
-                    fournies sont exactes. Un conseiller vous contactera sous 48h.
-                  </p>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
-          <Button
-            variant="outline"
-            className="border-white/10 bg-white/5"
-            onClick={handlePrev}
-            disabled={currentStep === 1}
-          >
-            <ChevronLeft className="h-4 w-4 mr-1" />
-            Précédent
-          </Button>
-
-          {currentStep < steps.length ? (
-            <Button
-              className="bg-primary hover:bg-primary/90"
-              onClick={handleNext}
-              disabled={!canProceed()}
-            >
-              Suivant
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          ) : (
-            <Button
-              className="bg-accent hover:bg-accent/90"
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                />
-              ) : (
-                <>
-                  <Check className="h-4 w-4 mr-1" />
-                  Soumettre la déclaration
-                </>
               )}
+
+              {/* --- STEP 5: CONFIRMATION --- */}
+              {currentStep === 5 && (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-slate-900">Récapitulatif</h2>
+
+                  <div className="space-y-4">
+                    {/* Type */}
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-4">
+                        {selectedClaimType && (
+                            <>
+                                <div className="w-12 h-12 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm text-blue-600">
+                                    <selectedClaimType.icon className="h-6 w-6" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Sinistre</p>
+                                    <p className="font-bold text-slate-900">{selectedClaimType.label}</p>
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    {/* Grid Details */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Date</p>
+                            <p className="font-medium text-slate-900">{formData.date} {formData.time && `à ${formData.time}`}</p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Lieu</p>
+                            <p className="font-medium text-slate-900 truncate">{formData.location}</p>
+                        </div>
+                    </div>
+
+                    {/* Desc */}
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-2">Description</p>
+                        <p className="text-sm text-slate-700 leading-relaxed italic">"{formData.description}"</p>
+                    </div>
+
+                    {/* Photos */}
+                    {formData.photos.length > 0 && (
+                        <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <Image className="w-4 h-4" />
+                            <span>{formData.photos.length} photo(s) jointe(s)</span>
+                        </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-lg text-sm text-emerald-800">
+                     <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600" />
+                     <p>En soumettant, vous certifiez l'exactitude des informations. Un expert analysera votre demande sous 48h.</p>
+                  </div>
+                </div>
+              )}
+
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation Buttons */}
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
+            <Button
+              variant="ghost"
+              className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+              onClick={handlePrev}
+              disabled={currentStep === 1}
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Précédent
             </Button>
-          )}
+
+            {currentStep < steps.length ? (
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-100 transition-all hover:scale-105"
+                onClick={handleNext}
+                disabled={!canProceed()}
+              >
+                Suivant
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            ) : (
+              <Button
+                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-100 transition-all hover:scale-105 min-w-[140px]"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                  />
+                ) : (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Soumettre
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
         </div>
+
       </div>
     </div>
   );

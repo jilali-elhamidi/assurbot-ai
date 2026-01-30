@@ -12,6 +12,7 @@ import {
   Bell,
   Lock,
   CreditCard,
+  LogOut
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,63 +62,71 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-8 bg-slate-50/50 min-h-screen p-6 md:p-8 font-['Outfit'] selection:bg-blue-100 selection:text-blue-900">
+      
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-2xl md:text-3xl font-bold">
-          <span className="gradient-text">Mon Profil</span>
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Gérez vos informations personnelles et préférences
+        <h1 className="text-3xl font-bold text-slate-900">Mon Profil</h1>
+        <p className="text-slate-500 mt-1">
+          Gérez vos informations personnelles et vos préférences.
         </p>
       </motion.div>
 
-      {/* Profile Card */}
+      {/* Profile Card Summary */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="glass-card border-white/10">
-          <CardContent className="p-6">
-            <div className="flex flex-col sm:flex-row items-center gap-6">
-              {/* Avatar */}
-              <div className="relative group">
-                <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center">
-                  <User className="h-12 w-12 text-primary" />
+        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
+          {/* BANNIÈRE BLEUE (Hauteur réduite pour éviter les conflits : h-32) */}
+          <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-90" />
+          
+          <CardContent className="px-6 pb-6 md:px-8 md:pb-8 relative">
+            {/* Conteneur avec z-index pour rester au-dessus */}
+            <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-end -mt-12 gap-4 sm:gap-6">
+              
+              {/* Avatar (Taille ajustée : w-24 h-24) */}
+              <div className="relative group flex-shrink-0">
+                <div className="w-24 h-24 rounded-full bg-white p-1.5 shadow-lg">
+                    <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 overflow-hidden relative">
+                        <User className="h-10 w-10 text-slate-400" />
+                    </div>
                 </div>
-                <button className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Camera className="h-6 w-6 text-white" />
+                <button className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 text-white m-1.5">
+                  <Camera className="h-6 w-6" />
                 </button>
               </div>
-              {/* Info */}
-              <div className="text-center sm:text-left flex-1">
-                <h2 className="text-xl font-semibold">
+
+              {/* Info - Avec marge supérieure (mt-4) pour bien descendre dans le blanc */}
+              <div className="flex-1 text-center sm:text-left mt-2 sm:mt-0 sm:mb-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">
                   {formData.firstName} {formData.lastName}
                 </h2>
-                <p className="text-muted-foreground">{formData.email}</p>
-                <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
-                  <span className="badge-active text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                    <Shield className="h-3 w-3" />
-                    Client Premium
-                  </span>
-                  <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-muted-foreground">
-                    Membre depuis 2023
-                  </span>
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-1 text-sm text-slate-500">
+                    <span className="flex items-center gap-1.5">
+                        <Mail className="w-3.5 h-3.5" />
+                        {formData.email}
+                    </span>
+                    <span className="hidden sm:inline text-slate-300">|</span>
+                    <span className="flex items-center gap-1 text-emerald-600 font-medium bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                        <Shield className="h-3 w-3" /> Client Premium
+                    </span>
                 </div>
               </div>
+
               {/* Quick Stats */}
-              <div className="hidden md:flex gap-6 text-center">
-                <div>
-                  <p className="text-2xl font-bold text-primary">2</p>
-                  <p className="text-xs text-muted-foreground">Contrats</p>
+              <div className="flex gap-8 border-t sm:border-t-0 sm:border-l border-slate-100 pt-4 sm:pt-0 sm:pl-8 mt-2 sm:mt-0 w-full sm:w-auto justify-center sm:justify-start">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-slate-900">2</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Contrats</p>
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-warning">1</p>
-                  <p className="text-xs text-muted-foreground">Sinistre</p>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-slate-900">1</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sinistre</p>
                 </div>
               </div>
             </div>
@@ -125,166 +134,140 @@ const ProfilePage = () => {
         </Card>
       </motion.div>
 
-      {/* Tabs */}
+      {/* Tabs & Content */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
         <Tabs defaultValue="personal" className="space-y-6">
-          <TabsList className="glass-card border-white/10 p-1">
+          <TabsList className="bg-slate-100 p-1 border border-slate-200 rounded-xl w-full sm:w-auto flex h-auto overflow-x-auto">
             <TabsTrigger
               value="personal"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="flex-1 sm:flex-none data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm rounded-lg py-2.5 px-6 transition-all font-medium whitespace-nowrap"
             >
               <User className="h-4 w-4 mr-2" />
               Informations
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="flex-1 sm:flex-none data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm rounded-lg py-2.5 px-6 transition-all font-medium whitespace-nowrap"
             >
               <Bell className="h-4 w-4 mr-2" />
               Notifications
             </TabsTrigger>
             <TabsTrigger
               value="security"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="flex-1 sm:flex-none data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm rounded-lg py-2.5 px-6 transition-all font-medium whitespace-nowrap"
             >
               <Lock className="h-4 w-4 mr-2" />
               Sécurité
             </TabsTrigger>
           </TabsList>
 
-          {/* Personal Info Tab */}
+          {/* --- TAB 1: INFORMATIONS --- */}
           <TabsContent value="personal">
-            <Card className="glass-card border-white/10">
+            <Card className="border-slate-200 shadow-sm bg-white">
               <CardHeader>
-                <CardTitle>Informations personnelles</CardTitle>
-                <CardDescription>
-                  Mettez à jour vos informations de contact
+                <CardTitle className="text-xl text-slate-900">Informations personnelles</CardTitle>
+                <CardDescription className="text-slate-500">
+                  Mettez à jour vos informations de contact et d'adresse.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Nom / Prénom */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">Prénom</Label>
+                    <Label htmlFor="firstName" className="text-slate-700">Prénom</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         id="firstName"
-                        className="pl-10 input-glass"
+                        className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                         value={formData.firstName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, firstName: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Nom</Label>
+                    <Label htmlFor="lastName" className="text-slate-700">Nom</Label>
                     <Input
                       id="lastName"
-                      className="input-glass"
+                      className="bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                       value={formData.lastName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, lastName: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Contact */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="text-slate-700">Email</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         id="email"
                         type="email"
-                        className="pl-10 input-glass"
+                        className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                         value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Téléphone</Label>
+                    <Label htmlFor="phone" className="text-slate-700">Téléphone</Label>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         id="phone"
-                        className="pl-10 input-glass"
+                        className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                         value={formData.phone}
-                        onChange={(e) =>
-                          setFormData({ ...formData, phone: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
                     </div>
                   </div>
                 </div>
 
+                {/* Adresse */}
                 <div className="space-y-2">
-                  <Label htmlFor="address">Adresse</Label>
+                  <Label htmlFor="address" className="text-slate-700">Adresse</Label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                       id="address"
-                      className="pl-10 input-glass"
+                      className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                       value={formData.address}
-                      onChange={(e) =>
-                        setFormData({ ...formData, address: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                   <div className="space-y-2 col-span-1">
-                    <Label htmlFor="postalCode">Code postal</Label>
+                    <Label htmlFor="postalCode" className="text-slate-700">Code postal</Label>
                     <Input
                       id="postalCode"
-                      className="input-glass"
+                      className="bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                       value={formData.postalCode}
-                      onChange={(e) =>
-                        setFormData({ ...formData, postalCode: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2 col-span-1 sm:col-span-2">
-                    <Label htmlFor="city">Ville</Label>
+                    <Label htmlFor="city" className="text-slate-700">Ville</Label>
                     <Input
                       id="city"
-                      className="input-glass"
+                      className="bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                       value={formData.city}
-                      onChange={(e) =>
-                        setFormData({ ...formData, city: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="birthDate">Date de naissance</Label>
-                  <div className="relative max-w-xs">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      id="birthDate"
-                      type="date"
-                      className="pl-10 input-glass"
-                      value={formData.birthDate}
-                      onChange={(e) =>
-                        setFormData({ ...formData, birthDate: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-6 flex justify-end border-t border-slate-100">
                   <Button
-                    className="bg-primary hover:bg-primary/90"
+                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-100"
                     onClick={handleSave}
                     disabled={isLoading}
                   >
@@ -306,153 +289,101 @@ const ProfilePage = () => {
             </Card>
           </TabsContent>
 
-          {/* Notifications Tab */}
+          {/* --- TAB 2: NOTIFICATIONS --- */}
           <TabsContent value="notifications">
-            <Card className="glass-card border-white/10">
+            <Card className="border-slate-200 shadow-sm bg-white">
               <CardHeader>
-                <CardTitle>Préférences de notification</CardTitle>
-                <CardDescription>
-                  Choisissez comment vous souhaitez être contacté
+                <CardTitle className="text-xl text-slate-900">Préférences</CardTitle>
+                <CardDescription className="text-slate-500">
+                  Choisissez comment nous pouvons vous contacter.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Notifications par email</p>
-                        <p className="text-sm text-muted-foreground">
-                          Recevez des mises à jour sur vos contrats
-                        </p>
-                      </div>
+              <CardContent className="space-y-4">
+                
+                {[
+                    { key: 'email', label: 'Email', desc: 'Mises à jour sur vos contrats', icon: Mail, color: 'text-blue-600', bg: 'bg-blue-50' },
+                    { key: 'sms', label: 'SMS', desc: 'Alertes urgentes et rappels', icon: Phone, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                    { key: 'push', label: 'Push Mobile', desc: 'Notifications sur l\'application', icon: Bell, color: 'text-purple-600', bg: 'bg-purple-50' },
+                    { key: 'newsletter', label: 'Newsletter', desc: 'Conseils et actualités', icon: Mail, color: 'text-amber-600', bg: 'bg-amber-50' }
+                ].map((item) => (
+                    <div key={item.key} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:border-blue-100 hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center gap-4">
+                            <div className={cn("p-2.5 rounded-lg", item.bg, item.color)}>
+                                <item.icon className="h-5 w-5" />
+                            </div>
+                            <div>
+                                <p className="font-semibold text-slate-900">{item.label}</p>
+                                <p className="text-sm text-slate-500">{item.desc}</p>
+                            </div>
+                        </div>
+                        <Switch
+                            checked={notifications[item.key as keyof typeof notifications]}
+                            onCheckedChange={(checked) => setNotifications({ ...notifications, [item.key]: checked })}
+                        />
                     </div>
-                    <Switch
-                      checked={notifications.email}
-                      onCheckedChange={(checked) =>
-                        setNotifications({ ...notifications, email: checked })
-                      }
-                    />
-                  </div>
+                ))}
 
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Notifications SMS</p>
-                        <p className="text-sm text-muted-foreground">
-                          Alertes urgentes par SMS
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={notifications.sms}
-                      onCheckedChange={(checked) =>
-                        setNotifications({ ...notifications, sms: checked })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      <Bell className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Notifications push</p>
-                        <p className="text-sm text-muted-foreground">
-                          Notifications sur l'application
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={notifications.push}
-                      onCheckedChange={(checked) =>
-                        setNotifications({ ...notifications, push: checked })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Newsletter</p>
-                        <p className="text-sm text-muted-foreground">
-                          Conseils et actualités assurance
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={notifications.newsletter}
-                      onCheckedChange={(checked) =>
-                        setNotifications({ ...notifications, newsletter: checked })
-                      }
-                    />
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Security Tab */}
+          {/* --- TAB 3: SECURITÉ --- */}
           <TabsContent value="security">
-            <Card className="glass-card border-white/10">
+            <Card className="border-slate-200 shadow-sm bg-white">
               <CardHeader>
-                <CardTitle>Sécurité du compte</CardTitle>
-                <CardDescription>
-                  Gérez la sécurité de votre compte
+                <CardTitle className="text-xl text-slate-900">Sécurité du compte</CardTitle>
+                <CardDescription className="text-slate-500">
+                  Protégez votre compte et gérez vos accès.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <button className="w-full flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 hover:border-primary/30 transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <Lock className="h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <p className="font-medium">Changer le mot de passe</p>
-                        <p className="text-sm text-muted-foreground">
-                          Dernière modification il y a 3 mois
-                        </p>
-                      </div>
+              <CardContent className="space-y-4">
+                
+                <button className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-blue-200 hover:bg-slate-50 transition-all group">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-lg bg-slate-100 text-slate-600">
+                        <Lock className="h-5 w-5" />
                     </div>
-                    <span className="text-primary group-hover:translate-x-1 transition-transform">
-                      →
-                    </span>
-                  </button>
-
-                  <button className="w-full flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 hover:border-primary/30 transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <Shield className="h-5 w-5 text-accent" />
-                      <div className="text-left">
-                        <p className="font-medium">Authentification à deux facteurs</p>
-                        <p className="text-sm text-accent">Activée</p>
-                      </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-slate-900">Mot de passe</p>
+                      <p className="text-sm text-slate-500">Dernière modification il y a 3 mois</p>
                     </div>
-                    <span className="text-primary group-hover:translate-x-1 transition-transform">
-                      →
-                    </span>
-                  </button>
+                  </div>
+                  <span className="text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all">→</span>
+                </button>
 
-                  <button className="w-full flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 hover:border-primary/30 transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <CreditCard className="h-5 w-5 text-primary" />
-                      <div className="text-left">
-                        <p className="font-medium">Moyens de paiement</p>
-                        <p className="text-sm text-muted-foreground">
-                          Visa •••• 4242
-                        </p>
-                      </div>
+                <button className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-blue-200 hover:bg-slate-50 transition-all group">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-lg bg-indigo-50 text-indigo-600">
+                        <Shield className="h-5 w-5" />
                     </div>
-                    <span className="text-primary group-hover:translate-x-1 transition-transform">
-                      →
-                    </span>
-                  </button>
-                </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-slate-900">Double authentification (2FA)</p>
+                      <p className="text-sm text-emerald-600 font-medium">Activée</p>
+                    </div>
+                  </div>
+                  <span className="text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all">→</span>
+                </button>
 
-                <div className="pt-4 border-t border-white/10">
-                  <button className="text-destructive hover:text-destructive/80 text-sm font-medium transition-colors">
+                <button className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-blue-200 hover:bg-slate-50 transition-all group">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-lg bg-blue-50 text-blue-600">
+                        <CreditCard className="h-5 w-5" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-slate-900">Moyens de paiement</p>
+                      <p className="text-sm text-slate-500">Visa •••• 4242</p>
+                    </div>
+                  </div>
+                  <span className="text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all">→</span>
+                </button>
+
+                <div className="pt-6 border-t border-slate-100">
+                  <button className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors text-sm font-medium">
+                    <LogOut className="h-4 w-4" />
                     Supprimer mon compte
                   </button>
                 </div>
+
               </CardContent>
             </Card>
           </TabsContent>

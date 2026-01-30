@@ -1,37 +1,35 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  FileText,
   Car,
   Home,
   Download,
   Eye,
-  ChevronRight,
   Calendar,
   Euro,
   Shield,
   Search,
-  Filter,
+  CheckCircle2,
+  FileCheck,
+  AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
+// --- MOCK DATA ---
 const contracts = [
   {
     id: 1,
@@ -46,6 +44,8 @@ const contracts = [
     coverage: ["Tous risques", "Assistance 24/7", "Véhicule de remplacement"],
     policyNumber: "AUTO-2024-001234",
     deductible: "300€",
+    color: "text-blue-600 bg-blue-50",
+    borderColor: "border-blue-100"
   },
   {
     id: 2,
@@ -60,6 +60,8 @@ const contracts = [
     coverage: ["Incendie", "Dégât des eaux", "Vol", "Responsabilité civile"],
     policyNumber: "HAB-2023-005678",
     deductible: "150€",
+    color: "text-emerald-600 bg-emerald-50",
+    borderColor: "border-emerald-100"
   },
   {
     id: 3,
@@ -74,6 +76,8 @@ const contracts = [
     coverage: ["Tiers étendu", "Bris de glace"],
     policyNumber: "AUTO-2022-009876",
     deductible: "500€",
+    color: "text-slate-500 bg-slate-100",
+    borderColor: "border-slate-200"
   },
 ];
 
@@ -111,325 +115,316 @@ const ContractsPage = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 },
+      transition: { staggerChildren: 0.05 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 bg-slate-50/50 min-h-screen p-6 md:p-8 font-['Outfit'] selection:bg-blue-100 selection:text-blue-900">
+      
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col gap-2"
       >
-        <h1 className="text-2xl md:text-3xl font-bold">
-          <span className="gradient-text">Mes Contrats</span>
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Gérez et consultez vos polices d'assurance
+        <h1 className="text-3xl font-bold text-slate-900">Mes Contrats</h1>
+        <p className="text-slate-500">
+          Gérez vos polices d'assurance et téléchargez vos attestations en un clic.
         </p>
       </motion.div>
 
-      {/* Search and Filters */}
+      {/* Search and Filters Bar */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="flex flex-col sm:flex-row gap-4"
+        className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm"
       >
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+        <div className="relative w-full sm:w-96">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Rechercher un contrat..."
-            className="pl-10 input-glass"
+            placeholder="Rechercher (nom, n° police)..."
+            className="pl-10 bg-slate-50 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant={filterStatus === "all" ? "default" : "outline"}
+        
+        <div className="flex gap-2 w-full sm:w-auto p-1 bg-slate-100 rounded-lg">
+          <button
             className={cn(
-              filterStatus === "all"
-                ? "bg-primary"
-                : "border-white/10 bg-white/5"
+              "flex-1 sm:flex-none px-4 py-1.5 text-sm font-medium rounded-md transition-all",
+              filterStatus === "all" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
             )}
             onClick={() => setFilterStatus("all")}
           >
             Tous
-          </Button>
-          <Button
-            variant={filterStatus === "active" ? "default" : "outline"}
+          </button>
+          <button
             className={cn(
-              filterStatus === "active"
-                ? "bg-accent text-accent-foreground"
-                : "border-white/10 bg-white/5"
+              "flex-1 sm:flex-none px-4 py-1.5 text-sm font-medium rounded-md transition-all",
+              filterStatus === "active" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
             )}
             onClick={() => setFilterStatus("active")}
           >
             Actifs
-          </Button>
-          <Button
-            variant={filterStatus === "expired" ? "default" : "outline"}
+          </button>
+          <button
             className={cn(
-              filterStatus === "expired"
-                ? "bg-destructive"
-                : "border-white/10 bg-white/5"
+              "flex-1 sm:flex-none px-4 py-1.5 text-sm font-medium rounded-md transition-all",
+              filterStatus === "expired" ? "bg-white text-red-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
             )}
             onClick={() => setFilterStatus("expired")}
           >
             Expirés
-          </Button>
+          </button>
         </div>
       </motion.div>
 
-      {/* Contracts List */}
+      {/* Contracts Grid */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-4"
+        className="grid grid-cols-1 gap-4"
       >
         {filteredContracts.map((contract) => (
           <motion.div key={contract.id} variants={itemVariants}>
-            <Card className="glass-card border-white/10 hover:border-primary/30 transition-all group">
+            <Card 
+                className={cn(
+                    "border shadow-sm hover:shadow-md transition-all duration-300 group bg-white cursor-pointer",
+                    contract.status === "active" ? "hover:border-blue-200" : "hover:border-slate-300 opacity-80 hover:opacity-100"
+                )}
+                onClick={() => setSelectedContract(contract)}
+            >
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                  {/* Icon and Basic Info */}
-                  <div className="flex items-start gap-4 flex-1">
+                  
+                  {/* Left: Icon & Main Info */}
+                  <div className="flex items-start gap-5 flex-1">
                     <div
                       className={cn(
-                        "w-14 h-14 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110",
-                        contract.status === "active"
-                          ? "bg-primary/20"
-                          : "bg-destructive/20"
+                        "w-16 h-16 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 shadow-sm",
+                        contract.color
                       )}
                     >
-                      <contract.icon
-                        className={cn(
-                          "h-7 w-7",
-                          contract.status === "active"
-                            ? "text-primary"
-                            : "text-destructive"
-                        )}
-                      />
+                      <contract.icon className="h-8 w-8" />
                     </div>
+                    
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-semibold">{contract.name}</h3>
+                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                            {contract.name}
+                        </h3>
                         <span
                           className={cn(
-                            "text-xs px-2 py-1 rounded-full",
+                            "text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border",
                             contract.status === "active"
-                              ? "badge-active"
-                              : "badge-expired"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                              : "bg-slate-100 text-slate-500 border-slate-200"
                           )}
                         >
                           {contract.status === "active" ? "Actif" : "Expiré"}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Police N° {contract.policyNumber}
+                      
+                      <p className="text-sm text-slate-500 font-mono">
+                        POL: {contract.policyNumber}
                       </p>
-                      <div className="flex flex-wrap gap-4 mt-2 text-sm">
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          {contract.startDate} - {contract.endDate}
+                      
+                      <div className="flex flex-wrap gap-4 mt-3 text-sm">
+                        <span className="flex items-center gap-1.5 text-slate-600 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                          <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                          {contract.startDate} — {contract.endDate}
                         </span>
-                        <span className="flex items-center gap-1 text-primary font-medium">
-                          <Euro className="h-4 w-4" />
+                        <span className="flex items-center gap-1.5 font-semibold text-slate-900 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                          <Euro className="h-3.5 w-3.5 text-slate-400" />
                           {contract.premium}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Coverage Tags */}
-                  <div className="hidden md:flex flex-wrap gap-2 max-w-xs">
-                    {contract.coverage.slice(0, 3).map((item, i) => (
-                      <span
-                        key={i}
-                        className="text-xs px-2 py-1 rounded-full bg-white/5 border border-white/10"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                    {contract.coverage.length > 3 && (
-                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                        +{contract.coverage.length - 3}
-                      </span>
-                    )}
+                  {/* Middle: Coverage Preview */}
+                  <div className="hidden xl:flex flex-col gap-2 min-w-[200px]">
+                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Garanties</p>
+                     <div className="flex flex-wrap gap-2">
+                        {contract.coverage.slice(0, 2).map((item, i) => (
+                            <span key={i} className="text-xs px-2 py-1 rounded-md bg-slate-50 text-slate-600 border border-slate-100">
+                                {item}
+                            </span>
+                        ))}
+                        {contract.coverage.length > 2 && (
+                            <span className="text-xs px-2 py-1 rounded-md bg-slate-50 text-slate-400 border border-slate-100">
+                                +{contract.coverage.length - 2}
+                            </span>
+                        )}
+                     </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-2">
+                  {/* Right: Actions */}
+                  <div className="flex items-center gap-3 w-full lg:w-auto mt-4 lg:mt-0 border-t lg:border-t-0 border-slate-100 pt-4 lg:pt-0">
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="border-white/10 bg-white/5"
-                      onClick={() => setSelectedContract(contract)}
+                      className="flex-1 lg:flex-none border-slate-200 hover:bg-slate-50 text-slate-700"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedContract(contract);
+                      }}
                     >
-                      <Eye className="h-4 w-4 mr-1" />
+                      <Eye className="h-4 w-4 mr-2" />
                       Détails
                     </Button>
+                    
                     {contract.status === "active" && (
                       <Button
-                        size="sm"
-                        className="bg-primary hover:bg-primary/90"
-                        onClick={() => handleDownload(contract)}
+                        className="flex-1 lg:flex-none bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100 transition-all hover:scale-105"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownload(contract);
+                        }}
                       >
-                        <Download className="h-4 w-4 mr-1" />
+                        <Download className="h-4 w-4 mr-2" />
                         Attestation
                       </Button>
                     )}
                   </div>
+
                 </div>
               </CardContent>
             </Card>
           </motion.div>
         ))}
 
+        {/* Empty State */}
         {filteredContracts.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-12"
+            className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed"
           >
-            <Shield className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Aucun contrat trouvé</h3>
-            <p className="text-muted-foreground">
-              Modifiez vos critères de recherche ou filtres
-            </p>
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                <Search className="h-8 w-8 text-slate-300" />
+            </div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-1">Aucun contrat trouvé</h3>
+            <p className="text-slate-500">Essayez de modifier vos filtres de recherche.</p>
           </motion.div>
         )}
       </motion.div>
 
-      {/* Contract Details Dialog */}
+      {/* --- MODAL DÉTAILS CONTRAT --- */}
       <Dialog open={!!selectedContract} onOpenChange={() => setSelectedContract(null)}>
-        <DialogContent className="glass-card border-white/10 max-w-lg">
+        <DialogContent className="bg-white border-slate-200 max-w-lg shadow-2xl p-0 overflow-hidden font-['Outfit']">
           {selectedContract && (
             <>
-              <DialogHeader>
-                <div className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center",
-                      selectedContract.status === "active"
-                        ? "bg-primary/20"
-                        : "bg-destructive/20"
-                    )}
-                  >
-                    <selectedContract.icon
-                      className={cn(
-                        "h-6 w-6",
-                        selectedContract.status === "active"
-                          ? "text-primary"
-                          : "text-destructive"
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <DialogTitle>{selectedContract.name}</DialogTitle>
-                    <DialogDescription>
-                      Police N° {selectedContract.policyNumber}
-                    </DialogDescription>
-                  </div>
-                </div>
-              </DialogHeader>
-
-              <div className="space-y-6 mt-4">
-                {/* Status and Dates */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 rounded-lg bg-white/5">
-                    <p className="text-xs text-muted-foreground mb-1">Statut</p>
-                    <span
-                      className={cn(
-                        "text-sm font-medium",
-                        selectedContract.status === "active"
-                          ? "text-accent"
-                          : "text-destructive"
-                      )}
-                    >
-                      {selectedContract.status === "active" ? "Actif" : "Expiré"}
-                    </span>
-                  </div>
-                  <div className="p-3 rounded-lg bg-white/5">
-                    <p className="text-xs text-muted-foreground mb-1">Franchise</p>
-                    <span className="text-sm font-medium">{selectedContract.deductible}</span>
-                  </div>
-                </div>
-
-                {/* Dates */}
-                <div className="p-4 rounded-lg bg-white/5">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium">Période de couverture</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
+              {/* Header Modal */}
+              <div className={`p-6 border-b border-slate-100 ${selectedContract.status === 'active' ? 'bg-blue-50/50' : 'bg-slate-50'}`}>
+                 <div className="flex items-start gap-4">
+                    <div className={cn(
+                        "w-12 h-12 rounded-xl flex items-center justify-center shadow-sm",
+                        selectedContract.color
+                    )}>
+                        <selectedContract.icon className="h-6 w-6" />
+                    </div>
                     <div>
-                      <p className="text-muted-foreground">Début</p>
-                      <p className="font-medium">{selectedContract.startDate}</p>
+                        <DialogTitle className="text-xl font-bold text-slate-900 mb-1">
+                            {selectedContract.name}
+                        </DialogTitle>
+                        <DialogDescription className="text-slate-500 font-mono text-xs">
+                            POLICE : {selectedContract.policyNumber}
+                        </DialogDescription>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground self-center" />
+                 </div>
+              </div>
+
+              <div className="p-6 space-y-6">
+                
+                {/* Status Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 rounded-xl border border-slate-100 bg-slate-50">
+                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Statut</p>
+                        <div className="flex items-center gap-2">
+                            {selectedContract.status === "active" ? (
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                            ) : (
+                                <AlertCircle className="w-4 h-4 text-slate-400" />
+                            )}
+                            <span className={cn(
+                                "font-bold text-sm",
+                                selectedContract.status === "active" ? "text-emerald-600" : "text-slate-500"
+                            )}>
+                                {selectedContract.status === "active" ? "Actif" : "Expiré"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="p-3 rounded-xl border border-slate-100 bg-slate-50">
+                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Franchise</p>
+                        <p className="font-bold text-slate-900 text-sm">{selectedContract.deductible}</p>
+                    </div>
+                </div>
+
+                {/* Timeline */}
+                <div className="relative pl-4 border-l-2 border-slate-100 space-y-6">
+                    <div className="relative">
+                        <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 border-white bg-blue-500 shadow-sm" />
+                        <p className="text-xs text-slate-400 mb-0.5">Date de début</p>
+                        <p className="text-sm font-medium text-slate-900">{selectedContract.startDate}</p>
+                    </div>
+                    <div className="relative">
+                        <div className={cn(
+                            "absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 border-white shadow-sm",
+                            selectedContract.status === "active" ? "bg-slate-300" : "bg-red-400"
+                        )} />
+                        <p className="text-xs text-slate-400 mb-0.5">Date de fin</p>
+                        <p className="text-sm font-medium text-slate-900">{selectedContract.endDate}</p>
+                    </div>
+                </div>
+
+                {/* Financials (STYLE FORCÉ POUR GARANTIR L'AFFICHAGE CLAIR) */}
+                <div 
+                  className="p-5 rounded-2xl border flex justify-between items-center shadow-sm"
+                  style={{ backgroundColor: '#eff6ff', borderColor: '#dbeafe' }} // Force bleu clair (blue-50)
+                >
+                    <div>
+                        <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Mensualité</p>
+                        <p className="text-3xl font-bold text-slate-900">{selectedContract.premium}</p>
+                    </div>
                     <div className="text-right">
-                      <p className="text-muted-foreground">Fin</p>
-                      <p className="font-medium">{selectedContract.endDate}</p>
+                        <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Annuel</p>
+                        <p className="text-sm font-bold text-slate-700">{selectedContract.annualPremium}</p>
                     </div>
-                  </div>
                 </div>
 
-                {/* Premium */}
-                <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Euro className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium">Prime d'assurance</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-2xl font-bold text-primary">
-                      {selectedContract.premium}
-                    </span>
-                    <span className="text-sm text-muted-foreground self-end">
-                      ({selectedContract.annualPremium})
-                    </span>
-                  </div>
-                </div>
-
-                {/* Coverage */}
+                {/* Coverage List */}
                 <div>
-                  <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-accent" />
-                    Garanties incluses
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedContract.coverage.map((item, i) => (
-                      <span
-                        key={i}
-                        className="text-sm px-3 py-1.5 rounded-full bg-accent/10 text-accent border border-accent/20"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
+                    <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-blue-500" /> Garanties incluses
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                        {selectedContract.coverage.map((item, i) => (
+                            <span key={i} className="text-xs px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-medium">
+                                {item}
+                            </span>
+                        ))}
+                    </div>
                 </div>
 
-                {/* Actions */}
+                {/* Footer Actions */}
                 {selectedContract.status === "active" && (
-                  <Button
-                    className="w-full bg-primary hover:bg-primary/90"
-                    onClick={() => {
-                      handleDownload(selectedContract);
-                      setSelectedContract(null);
-                    }}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Télécharger l'attestation
-                  </Button>
+                    <Button 
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 rounded-xl shadow-lg shadow-blue-100 mt-2"
+                        onClick={() => handleDownload(selectedContract)}
+                    >
+                        <FileCheck className="mr-2 h-4 w-4" /> Télécharger l'attestation
+                    </Button>
                 )}
+
               </div>
             </>
           )}
