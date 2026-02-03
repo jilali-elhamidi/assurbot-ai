@@ -1,73 +1,104 @@
-# Welcome to your Lovable project
+# 💻 assurbot | Client Interface & Dashboard
 
-## Project info
+> **"The Face of Intelligent Insurance."** — Capgemini GenAI Hackathon 2026
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+![Status](https://img.shields.io/badge/Status-Frontend_Ready-success) ![Tech](https://img.shields.io/badge/Stack-React_Vite_Tailwind-blue) ![UI](https://img.shields.io/badge/UI-Shadcn_Radix-black)
 
-## How can I edit this code?
+## 📖 About The Frontend
 
-There are several ways of editing your application.
+This repository contains the **User Interface (UI)** for the **AgentVox** system. It provides a modern, responsive dashboard where insured clients can:
+* Visualize their contracts and claims.
+* Interact with the **AI Voice Assistant** via a dedicated widget.
+* Track the status of their requests in real-time.
 
-**Use Lovable**
+Built with performance and aesthetics in mind, it uses the latest **React** ecosystem tools.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## ✨ Key Features
 
-**Use your preferred IDE**
+### 🎙️ AI Voice Widget
+A persistent, floating voice assistant component (`VoiceAssistantWidget.tsx`) that connects to the LiveKit backend. It allows hands-free navigation and claim declaration.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📊 Interactive Dashboard
+* **Overview (`DashboardPage`):** Real-time stats on active claims and next payments.
+* **Claims Management (`ClaimsPage`):** Detailed view of accident reports, status updates, and uploaded photos.
+* **Smart Contracts (`ContractsPage`):** Digital view of insurance policies (Auto/Habitation).
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🎨 Modern UI/UX
+* **Particle Effects:** Engaging background animations (`ParticlesBackground.tsx`).
+* **Responsive Design:** Fully mobile-compatible using **Tailwind CSS**.
+* **Accessible Components:** Built with **Shadcn UI** & Radix Primitives.
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🛠️ Tech Stack
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+| Category | Technology | Usage |
+| :--- | :--- | :--- |
+| **Framework** | **React 18 + Vite** | Blazing fast frontend tooling |
+| **Language** | **TypeScript** | Type-safe development |
+| **Styling** | **Tailwind CSS** | Utility-first CSS framework |
+| **Components** | **Shadcn UI** | High-quality, customizable components |
+| **Icons** | **Lucide React** | Modern iconography |
+| **Routing** | **React Router DOM** | Client-side navigation |
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## 🚀 Installation & Setup
+
+### Prerequisites
+* Node.js (v18 or higher)
+* npm or yarn
+* *The AgentVox Python Backend running on port 8000*
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/jilali-elhamidi/assurbot-ai
+cd assurbot-ai
+```
+### 2. Install Dependencies
+```bash
+npm install
+# or
+yarn install
 ```
 
-**Edit a file directly in GitHub**
+### 3. Configure The Api
+```bash
+Extrait de code
+VITE_LIVEKIT_URL=wss://your-project.livekit.cloud (VoiceAssistantWidget)
+```
+### 4.Run Development Server
+```bash
+npm run dev
+```
+Open http://localhost:8080 (or the port shown in your terminal) to view the dashboard.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Project Structure
+```
+src/
+├── components/
+│   ├── ui/               # Reusable Shadcn components (Buttons, Cards, Inputs)
+│   ├── about/            # Aesthetic components (ParticlesBackground)
+│   ├── NavLink.tsx       # Navigation logic
+│   └── VoiceAssistantWidget.tsx  # 🎤 The Core Voice Component
+├── pages/
+│   ├── LandingPage.tsx   # Public Home / Welcome Screen
+│   ├── DashboardPage.tsx # User Area Main View
+│   ├── ClaimsPage.tsx    # Sinistres Management
+│   ├── ContractsPage.tsx # Policy Viewer
+│   ├── ProfilePage.tsx   # User Settings
+│   └── LoginPage.tsx     # Authentication Screen
+├── lib/                  # Utils & Helpers
+└── App.tsx               # Main Router Logic
+```
 
-**Use GitHub Codespaces**
+## 🤝 Integration with Backend
+```bash
+This frontend is designed to work in tandem with the AgentVox Python Backend.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Token Generation: The frontend calls the backend API (/token) to get a secure LiveKit Token.
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Voice Streaming: The VoiceAssistantWidget establishes a WebSocket connection to LiveKit Cloud using that token to enable real-time audio.
+```
