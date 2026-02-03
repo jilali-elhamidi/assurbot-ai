@@ -17,6 +17,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ContractsPage from "./pages/ContractsPage";
 import ClaimsPage from "./pages/ClaimsPage";
 import ProfilePage from "./pages/ProfilePage";
+import AgentDemoPage from "./pages/AgentDemoPage";
 
 import NotFound from "./pages/NotFound";
 
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/contracts" element={<ContractsPage />} />
             <Route path="/claims" element={<ClaimsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+			<Route path="/demo" element={<AgentDemoPage />} />
           </Route>
 
           {/* Catch-all */}

@@ -277,9 +277,11 @@ const LandingPage = () => {
                   Démarrer gratuitement
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium text-base shadow-sm">
-                <Mic className="mr-2 w-4 h-4 text-blue-600" /> Voir la démo
-              </Button>
+              <Link to="/demo">
+				<Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium text-base shadow-sm">
+				  <Mic className="mr-2 w-4 h-4 text-blue-600" /> Voir la démo
+				</Button>
+			  </Link>
             </motion.div>
           </div>
 
