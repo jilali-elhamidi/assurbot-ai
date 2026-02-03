@@ -82,12 +82,10 @@ const pendingClaims = [
   },
 ];
 
-// --- COMPOSANT SKELETON (LOADING) ---
 const Skeleton = ({ className }: { className?: string }) => (
   <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
 );
 
-// --- PAGE DASHBOARD ---
 const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
 
@@ -98,10 +96,7 @@ const DashboardPage = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
@@ -110,56 +105,56 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="space-y-8 bg-slate-50/50 min-h-screen p-6 md:p-8 font-['Outfit'] selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-slate-50/50 p-4 sm:p-6 md:p-8 font-['Outfit'] selection:bg-blue-100 selection:text-blue-900">
       
-      {/* Header */}
+      {/* Header - Responsive stack on small mobile */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
       >
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
             Bonjour, <span className="text-blue-600">Jean</span> 👋
           </h1>
-          <p className="text-slate-500 mt-1">
-            Voici ce qui se passe sur votre compte aujourd'hui.
+          <p className="text-sm md:text-base text-slate-500 mt-1">
+            Voici l'état de votre compte aujourd'hui.
           </p>
         </div>
         
-        <div className="flex gap-3">
-            <Link to="/contracts">
-                <Button variant="outline" className="bg-white border-slate-200 hover:bg-slate-50 text-slate-700 shadow-sm">
-                    <Plus className="mr-2 h-4 w-4" /> Nouveau contrat
+        <div className="flex flex-wrap gap-2 sm:gap-3">
+            <Link to="/contracts" className="flex-1 sm:flex-none">
+                <Button variant="outline" className="w-full bg-white border-slate-200 text-slate-700 shadow-sm">
+                    <Plus className="mr-2 h-4 w-4" /> <span className="whitespace-nowrap">Nouveau contrat</span>
                 </Button>
             </Link>
-            <Link to="/claims">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 transition-all hover:scale-105">
-                <AlertTriangle className="mr-2 h-4 w-4" />
-                Déclarer un sinistre
-            </Button>
+            <Link to="/claims" className="flex-1 sm:flex-none">
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 transition-all">
+                    <AlertTriangle className="mr-2 h-4 w-4" />
+                    <span className="whitespace-nowrap">Déclarer un sinistre</span>
+                </Button>
             </Link>
         </div>
       </motion.div>
 
-      {/* Stats Cards (KPIs) */}
+      {/* Stats Cards (KPIs) - Responsive grid */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-8"
       >
         {[
             { label: "Contrats Actifs", value: "2", sub: "Tous à jour", icon: FileText, color: "text-blue-600 bg-blue-50" },
             { label: "Prochaine Échéance", value: "15 Fév", sub: "Auto - 45€", icon: Calendar, color: "text-purple-600 bg-purple-50" },
-            { label: "Sinistres en cours", value: "1", sub: "En analyse", icon: Activity, color: "text-amber-600 bg-amber-50" }, // Changed Icon & Color
+            { label: "Sinistres en cours", value: "1", sub: "En analyse", icon: Activity, color: "text-amber-600 bg-amber-50" },
             { label: "Dépenses Annuelles", value: "1 650€", sub: "-5% vs 2025", icon: Euro, color: "text-emerald-600 bg-emerald-50" }
         ].map((stat, i) => (
             <motion.div key={i} variants={itemVariants}>
-                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 bg-white group">
-                    <CardContent className="p-5">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className={`p-2.5 rounded-xl ${stat.color} transition-transform group-hover:scale-110`}>
+                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-all bg-white group">
+                    <CardContent className="p-4 md:p-5">
+                        <div className="flex justify-between items-start mb-3">
+                            <div className={`p-2 rounded-xl ${stat.color} group-hover:scale-110 transition-transform`}>
                                 <stat.icon className="h-5 w-5" />
                             </div>
                             {stat.label === "Sinistres en cours" && (
@@ -170,13 +165,9 @@ const DashboardPage = () => {
                             )}
                         </div>
                         <div>
-                            {loading ? (
-                                <Skeleton className="h-8 w-16 mb-1" />
-                            ) : (
-                                <div className="text-2xl font-bold text-slate-900">{stat.value}</div>
-                            )}
-                            <div className="text-sm font-medium text-slate-500">{stat.label}</div>
-                            <p className="text-xs text-slate-400 mt-1">{stat.sub}</p>
+                            {loading ? <Skeleton className="h-8 w-16 mb-1" /> : <div className="text-xl md:text-2xl font-bold text-slate-900">{stat.value}</div>}
+                            <div className="text-xs md:text-sm font-medium text-slate-500">{stat.label}</div>
+                            <p className="text-[10px] md:text-xs text-slate-400 mt-1">{stat.sub}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -184,79 +175,48 @@ const DashboardPage = () => {
         ))}
       </motion.div>
 
-      {/* Main Content Grid */}
+      {/* Main Content Grid - Stacked on Tablet/Mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Chart Section */}
+        {/* Chart Section - Takes full width on mobile/tablet */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="lg:col-span-2"
         >
-          <Card className="border-slate-200 shadow-sm bg-white h-full">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <Card className="border-slate-200 shadow-sm bg-white">
+            <CardHeader className="p-4 md:p-6">
+              <CardTitle className="text-base md:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <div className="p-1.5 bg-blue-50 rounded-lg">
                     <TrendingUp className="h-4 w-4 text-blue-600" />
                 </div>
                 Évolution des Dépenses
               </CardTitle>
-              <CardDescription className="text-slate-500">Vos cotisations mensuelles en 2026</CardDescription>
+              <CardDescription className="text-sm">Cotisations mensuelles 2026</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-2 md:p-6 pt-0">
               {loading ? (
-                <div className="h-[300px] w-full flex items-end gap-2 pb-2">
+                <div className="h-[250px] md:h-[300px] w-full flex items-end gap-1 pb-2">
                     {[...Array(12)].map((_, i) => (
-                        <Skeleton key={i} className="w-full" style={{ height: `${Math.random() * 60 + 20}%` }} />
+                        <Skeleton key={i} className="flex-1" style={{ height: `${Math.random() * 60 + 20}%` }} />
                     ))}
                 </div>
               ) : (
-                <div className="h-[300px] w-full">
+                <div className="h-[250px] md:h-[300px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={expenseData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <AreaChart data={expenseData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorMontant" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} /> {/* Blue-500 */}
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
                           <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                      <XAxis 
-                        dataKey="month" 
-                        stroke="#94a3b8" 
-                        fontSize={12} 
-                        tickLine={false} 
-                        axisLine={false} 
-                        dy={10}
-                      />
-                      <YAxis 
-                        stroke="#94a3b8" 
-                        fontSize={12} 
-                        tickFormatter={(value) => `${value}€`} 
-                        tickLine={false} 
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#fff",
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "8px",
-                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                          fontSize: "12px",
-                          color: "#1e293b"
-                        }}
-                        cursor={{ stroke: "#3b82f6", strokeWidth: 1, strokeDasharray: "4 4" }}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="montant"
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        fillOpacity={1}
-                        fill="url(#colorMontant)"
-                        animationDuration={1500}
-                      />
+                      <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(v) => `${v}€`} tickLine={false} axisLine={false} />
+                      <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)" }} />
+                      <Area type="monotone" dataKey="montant" stroke="#3b82f6" strokeWidth={3} fill="url(#colorMontant)" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -268,124 +228,81 @@ const DashboardPage = () => {
         {/* Right Column: Claims & Contracts */}
         <div className="space-y-6">
             
-            {/* Sinistres */}
-            <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-            >
+            {/* --- SECTION SINISTRES (Modifiée en Noir) --- */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
                 <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-                    <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/50">
-                        <CardTitle className="text-base font-bold text-slate-900 flex items-center justify-between">
+                    <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/50 p-4">
+                        <CardTitle className="text-sm md:text-base font-bold text-black flex items-center justify-between">
                             <span className="flex items-center gap-2">
-                                <Shield className="h-4 w-4 text-amber-500" /> Sinistres en cours
+                                <Shield className="h-4 w-4 text-amber-500" /> Sinistres
                             </span>
-                            <span className="text-xs font-normal px-2 py-1 bg-white border border-slate-200 rounded-full text-slate-500">
-                                {pendingClaims.length} actif(s)
+                            <span className="text-[10px] font-normal px-2 py-0.5 bg-white border border-slate-200 rounded-full text-black">
+                                {pendingClaims.length} actif
                             </span>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-4">
-                        {loading ? (
-                            <Skeleton className="h-24 w-full rounded-xl" />
-                        ) : pendingClaims.length > 0 ? (
+                    <CardContent className="p-4">
+                        {loading ? <Skeleton className="h-20 w-full rounded-xl" /> : (
                             pendingClaims.map((claim) => (
                                 <div key={claim.id} className="relative group">
-                                    <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-slate-200 group-hover:bg-blue-200 transition-colors" />
-                                    <div className="ml-6 space-y-3">
+                                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500 rounded-full" />
+                                    <div className="ml-4 space-y-2">
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <h4 className="text-sm font-semibold text-slate-800">{claim.type}</h4>
-                                                <p className="text-xs text-slate-500">Déclaré le {claim.date}</p>
+                                                {/* Modification ici : text-black */}
+                                                <h4 className="text-sm font-bold text-black">{claim.type}</h4>
+                                                <p className="text-[10px] text-black/70 font-medium">{claim.date}</p>
                                             </div>
-                                            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-1 rounded-md border border-amber-100">
-                                                En analyse
+                                            <span className="text-[9px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                                                Analyse
                                             </span>
                                         </div>
-                                        
-                                        <div className="space-y-1">
-                                            <div className="flex justify-between text-xs text-slate-500">
-                                                <span>Progression</span>
-                                                <span className="font-medium text-blue-600">{claim.progress}%</span>
-                                            </div>
-                                            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                                                <motion.div 
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${claim.progress}%` }}
-                                                    transition={{ duration: 1, delay: 0.5 }}
-                                                    className="h-full bg-blue-600 rounded-full"
-                                                />
-                                            </div>
+                                        <div className="w-full h-1 bg-slate-200 rounded-full">
+                                            <motion.div initial={{ width: 0 }} animate={{ width: `${claim.progress}%` }} className="h-full bg-blue-600 rounded-full" />
                                         </div>
                                     </div>
                                 </div>
                             ))
-                        ) : (
-                            <div className="text-center py-6 text-slate-400">
-                                <Shield className="h-10 w-10 mx-auto mb-2 opacity-20" />
-                                <p className="text-sm">Aucun sinistre en cours</p>
-                            </div>
                         )}
-                        
                         <Link to="/claims" className="block mt-4">
-                            <Button variant="ghost" className="w-full text-xs text-slate-500 hover:text-blue-600 hover:bg-blue-50 h-8">
-                                Voir les détails <ArrowRight className="ml-1 h-3 w-3" />
+                            <Button variant="ghost" className="w-full text-xs font-semibold text-black hover:bg-slate-100 h-8">
+                                Voir détails <ArrowRight className="ml-1 h-3 w-3" />
                             </Button>
                         </Link>
                     </CardContent>
                 </Card>
             </motion.div>
 
-            {/* Contrats */}
-            <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-            >
-                <Card className="border-slate-200 shadow-sm bg-white">
-                    <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                            <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-                                <FileText className="h-4 w-4 text-slate-500" /> Mes Contrats
-                            </CardTitle>
-                            <Link to="/contracts" className="text-xs font-medium text-blue-600 hover:underline">
-                                Voir tout
-                            </Link>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                        {loading ? (
-                            <>
-                                <Skeleton className="h-16 w-full rounded-xl" />
-                                <Skeleton className="h-16 w-full rounded-xl" />
-                            </>
-                        ) : (
-                            activeContracts.map((contract) => (
-                                <div 
-                                    key={contract.id} 
-                                    className="p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200 hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group"
-                                >
-                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${contract.color} group-hover:scale-105 transition-transform`}>
-                                        <contract.icon className="h-5 w-5" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between items-center mb-0.5">
-                                            <h4 className="text-sm font-semibold text-slate-900 truncate pr-2">{contract.name}</h4>
-                                            <span className="text-xs font-bold text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-200 shadow-sm">
-                                                {contract.amount}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center text-xs text-slate-500">
-                                            <Clock className="h-3 w-3 mr-1" /> Échéance : {contract.nextPayment}
-                                        </div>
-                                    </div>
+            {/* --- SECTION CONTRATS (Modifiée en Noir) --- */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
+                <Card className="border-slate-200 shadow-sm bg-white p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        {/* Modification ici : text-black */}
+                        <CardTitle className="text-sm md:text-base font-bold text-black flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-black" /> Contrats
+                        </CardTitle>
+                        <Link to="/contracts" className="text-xs font-bold text-blue-700">Voir tout</Link>
+                    </div>
+                    <div className="space-y-3">
+                        {loading ? <Skeleton className="h-16 w-full rounded-xl" /> : activeContracts.map((contract) => (
+                            <div key={contract.id} className="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${contract.color}`}>
+                                    <contract.icon className="h-4 w-4" />
                                 </div>
-                            ))
-                        )}
-                    </CardContent>
+                                <div className="flex-1 min-w-0">
+                                    {/* Modification ici : text-black */}
+                                    <h4 className="text-xs font-bold text-black truncate">{contract.name}</h4>
+                                    <p className="text-[10px] text-black/70 font-medium flex items-center mt-0.5">
+                                        <Clock className="h-2.5 w-2.5 mr-1" /> {contract.nextPayment}
+                                    </p>
+                                </div>
+                                {/* Modification ici : text-black */}
+                                <span className="text-[10px] font-bold text-black">{contract.amount}</span>
+                            </div>
+                        ))}
+                    </div>
                 </Card>
             </motion.div>
-
         </div>
       </div>
     </div>
