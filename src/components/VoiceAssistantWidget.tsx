@@ -22,7 +22,7 @@ import "@livekit/components-styles";
 
 // Configuration (À adapter selon vos variables d'env)
 const LIVEKIT_URL = "wss://mohammed-t4xvcigh.livekit.cloud"; 
-const TOKEN_ENDPOINT = "http://127.0.0.1:8000/token?identity=frontend-user";
+const TOKEN_ENDPOINT = "https://jilali21-realtime-multilingual-voice-agent-assurance.hf.space/token?identity=frontend-user";
 
 const VoiceAssistantWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
